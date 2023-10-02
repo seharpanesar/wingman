@@ -1,0 +1,21 @@
+Backend:
+
+Frontend:
+    - Main screen
+        - Button at bottom to accept recent files 
+        - Grid view of options 
+        - On click, the user will get the prompt of ad or go premium 
+    - Crop screen (to just get the text of the screenshot)
+        - Optional, depending on how well the backend can parse a normal screenshot 
+
+    - Response screen:
+        - Back button: go back and try again 
+
+        - Response box:
+            - tap to copy text
+        - Possible responses:
+            - backend gave response, tap to copy text
+            - Screenshot didn't have any text   
+                - No text detected, please upload a clearer screenshot
+            - Network issues. 
+                - timeout, server is down etc...  

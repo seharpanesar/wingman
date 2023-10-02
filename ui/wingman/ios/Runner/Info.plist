@@ -47,5 +47,11 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Required for the selecting photos -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app uses a screenshot to extract text and return a response</string>
+	<!-- Google ads  -->
+	<key>GADApplicationIdentifier</key>
+	<string>ca-app-pub-4424699402000762~2186056541</string>
 </dict>
 </plist>
