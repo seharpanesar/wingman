@@ -42,6 +42,9 @@ dependencies:
   # ads 
   google_mobile_ads: ^3.0.0
 
+  # to get server respnose
+  http: ^1.1.2
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

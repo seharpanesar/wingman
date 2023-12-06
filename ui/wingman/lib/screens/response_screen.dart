@@ -1,22 +1,35 @@
 import 'package:flutter/material.dart';
+import 'package:http/src/response.dart';
 import 'package:wingman/screens/home_screen.dart';
 
 class ResponseScreen extends StatelessWidget {
-  const ResponseScreen({super.key});
+  const ResponseScreen(this.futureResponse, {super.key});
+
+  final Future<Response> futureResponse; 
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      // appBar: AppBar(
-      //   leading: IconButton(
-      //     icon: Icon(Icons.arrow_back_outlined),
-      //     onPressed: () => 
-      //   ),
-      // ),
       body: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Center(child: Text("Response here")),
+          FutureBuilder(
+            future: futureResponse, 
+            builder:(context, snapshot) {
+              if (snapshot.hasData) {
+                return Center(
+                  child: Text(
+                    snapshot.data.toString()
+                  )
+                );
+              }
+              else {
+                return CircularProgressIndicator();
+              }
+              
+            },
+          ),
+          
           ElevatedButton(
             onPressed: () =>  Navigator.pushAndRemoveUntil(
               context,

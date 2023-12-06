@@ -6,6 +6,7 @@ import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:wingman/screens/response_screen.dart';
 import 'package:wingman/shared/constants.dart';
+import 'package:wingman/shared/server_helper.dart';
 
 import '../shared/ad_helper.dart';
 
@@ -21,7 +22,6 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     _loadRewardedAd();
     super.initState();
   }
@@ -60,7 +60,6 @@ class _HomeScreenState extends State<HomeScreen> {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
       if (image == null) return null;
 
-      _adOrPremiumDialog();
 
 
       return File(image.path); 
@@ -72,56 +71,98 @@ class _HomeScreenState extends State<HomeScreen> {
        
   }
 
+  int _selectedContainerIndex = -1;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
         child: Column(
+          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
+            const SizedBox(height: 50,),
+
             // title
-            Text("Wingman"),
+            const Text("Wingman", style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),),
       
+            // gap
+            const SizedBox(height: 40,),
+
             // prompt + gridview 
-            Text("I want my response to be..."),
-            
+            const Center(child: Text("Submit a screenshot of your dating app conversation and get a quality response!", style: TextStyle( fontSize: 16),textAlign: TextAlign.center, )),
+            const SizedBox(height: 20,),
+
+            // prompt + gridview 
+            const Text("I want my response to be...", style: TextStyle( fontSize: 16), textAlign: TextAlign.left, ),
+            const SizedBox(height: 20,),
+
             GridView.builder(
+              padding: const EdgeInsets.all(8),
               shrinkWrap: true,
               primary: false,
-              itemCount: Constants.responseOptions.length,
-              padding: const EdgeInsets.all(20),
+              itemCount: 9,
               gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 3,
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 4.0,
+                mainAxisSpacing: 4.0,
               ),
-              
-              itemBuilder: (context, index) {
-                return Column(
-                  children: [
-                    Text(Constants.responseOptions[index]),
-                  ],
+              itemBuilder: (BuildContext context, int index) {
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      if (_selectedContainerIndex == index) {
+                        _selectedContainerIndex = -1; // Reset if tapped again
+                      } else {
+                        _selectedContainerIndex = index;
+                      }
+                    });
+                  },
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeInOut,
+                    decoration: BoxDecoration(
+                      color: _selectedContainerIndex == index ? Colors.blue[500] : Colors.blue[100],
+                      border: _selectedContainerIndex == index
+                          ? Border.all(color: Colors.black, width: 4.0)
+                          : null,
+                      borderRadius: BorderRadius.circular(10)
+
+                    ),
+                    child: Center(
+                      child: Text(
+                        Constants.responseOptions[index],
+                        style: TextStyle(
+                          color: _selectedContainerIndex == index ? Colors.white : Colors.black,
+                          // fontSize: _selectedContainerIndex == index ? 16 : 14,
+                          fontWeight: _selectedContainerIndex == index ? FontWeight.bold : FontWeight.normal,
+
+                        ),
+                      ),
+                    ),
+                  )
                 );
               },
-            ),
-      
+            )
           ],
         ),
       ),
       floatingActionButton: Padding(
-        padding: EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(16.0),
         child: SizedBox(
           width: double.infinity, // Makes the FAB wide
           child: FloatingActionButton.extended(
             onPressed: () async {
               // pick file 
               File? image = await pickImage();
-              if (image == null) return; 
 
-              // prompt user for the ad here
+              // if image was chosen, then ask user if he wants to watch ad / go premium 
+              if (image == null) return;               
+              _adOrPremiumDialog(image);
+
 
             },
-            icon: Icon(Icons.add),
-            label: Text('Upload Screenshot'),
+            icon: const Icon(Icons.add),
+            label: const Text('Upload Screenshot'),
           ),
         ),
       ),
@@ -130,12 +171,12 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
   
-  Future<void> _adOrPremiumDialog() {
+  Future<void> _adOrPremiumDialog(File selectedPhoto) {
     return showDialog<void>(
 			context: context,
 			builder: (BuildContext context) {
 				return AlertDialog(
-					title: Text("Choose option"),
+					title: const Text("Choose option"),
 					content: const SingleChildScrollView(
 						child: ListBody(
 							children: <Widget>[
@@ -155,11 +196,14 @@ class _HomeScreenState extends State<HomeScreen> {
 									
 								),
 								onPressed: () {
+                  // after selection, make call to server and wait for response
+                  var futureResponse = ServerHelper.sendPhoto(selectedPhoto);
+
 									_rewardedAd?.show(
 										onUserEarnedReward: (_, reward) {
 											Navigator.push(
 												context,
-												MaterialPageRoute(builder: (context) => ResponseScreen()),
+												MaterialPageRoute(builder: (context) => ResponseScreen(futureResponse)),
 												// (Route<dynamic> route) => false
 											);
 										},
@@ -178,7 +222,14 @@ class _HomeScreenState extends State<HomeScreen> {
 									),
 								),
 								onPressed: () {
+                  // after selection, make call to server and wait for response
+                  var futureResponse = ServerHelper.sendPhoto(selectedPhoto);
+
 									// TODO: premium page 
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => ResponseScreen(futureResponse)),
+                  );
 									
 								},
 								child: const Text('Go premium'),
