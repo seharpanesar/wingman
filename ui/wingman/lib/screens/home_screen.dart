@@ -3,9 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:wingman/screens/response_screen.dart';
 import 'package:wingman/shared/constants.dart';
+import 'package:wingman/shared/image_helper.dart';
 import 'package:wingman/shared/server_helper.dart';
 
 import '../shared/ad_helper.dart';
@@ -53,24 +53,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 	}
-
-
-  Future<File?> pickImage() async {
-    try {
-      final image = await ImagePicker().pickImage(source: ImageSource.gallery);
-      if (image == null) return null;
-
-
-
-      return File(image.path); 
-    } on PlatformException catch(e) {
-      // TODO tell user to enable photo permissions
-      print("Failed to pick image $e"); 
-      return null;
-    }
-       
-  }
-
+  
   int _selectedContainerIndex = -1;
 
   @override
@@ -158,8 +141,6 @@ class _HomeScreenState extends State<HomeScreen> {
               // if image was chosen, then ask user if he wants to watch ad / go premium 
               if (image == null) return;               
               _adOrPremiumDialog(image);
-
-
             },
             icon: const Icon(Icons.add),
             label: const Text('Upload Screenshot'),
@@ -196,15 +177,17 @@ class _HomeScreenState extends State<HomeScreen> {
 									
 								),
 								onPressed: () {
-                  // after selection, make call to server and wait for response
-                  var futureResponse = ServerHelper.sendPhoto(selectedPhoto);
+                  // after photo selection, pass photo and response style to the server
+                  var futureResponse = ServerHelper.sendPhoto(
+                    selectedPhoto, 
+                  _selectedContainerIndex == -1 ? Constants.responseOptions.first : Constants.responseOptions[_selectedContainerIndex]
+                  );
 
 									_rewardedAd?.show(
 										onUserEarnedReward: (_, reward) {
 											Navigator.push(
 												context,
 												MaterialPageRoute(builder: (context) => ResponseScreen(futureResponse)),
-												// (Route<dynamic> route) => false
 											);
 										},
 									);
@@ -222,8 +205,11 @@ class _HomeScreenState extends State<HomeScreen> {
 									),
 								),
 								onPressed: () {
-                  // after selection, make call to server and wait for response
-                  var futureResponse = ServerHelper.sendPhoto(selectedPhoto);
+                  // after photo selection, pass photo and response style to the server
+                  var futureResponse = ServerHelper.sendPhoto(
+                    selectedPhoto, 
+                  _selectedContainerIndex == -1 ? Constants.responseOptions.first : Constants.responseOptions[_selectedContainerIndex]
+                  );
 
 									// TODO: premium page 
                   Navigator.push(
