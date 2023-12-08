@@ -20,8 +20,8 @@ def test_api_with_image(image_path, response_style, url):
 
 
 # Usage example
-url = 'http://127.0.0.1:5000/upload'
-image_path = 'sc.webp'
+url = 'https://cs536-jytfyonh5q-ue.a.run.app/upload'
+image_path = './test_screenshot.png'
 response_style = 'funny'
 
 response = test_api_with_image(image_path, response_style, url)
