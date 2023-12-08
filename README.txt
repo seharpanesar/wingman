@@ -3,7 +3,7 @@
 - Video presentation: ./CS536_final_video
     - Demo is contained in the video
 - In case video presentation from zip is buggy, you may view video at https://youtu.be/C7NGYW_H5wA
-- In case 
+- Github repo (just in case): https://github.com/seharpanesar/wingman 
 
 
 

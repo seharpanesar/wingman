@@ -5,7 +5,7 @@ import io
 from openai import OpenAI
 import os
 
-
+# THIS KEY HAS BEEN INVALIDATED FOR SECURITY PURPOSES
 client = OpenAI(api_key='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')
 
 app = Flask(__name__)
