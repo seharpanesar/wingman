@@ -3,7 +3,7 @@ import 'package:http/src/response.dart';
 import 'package:wingman/screens/home_screen.dart';
 
 import 'package:flutter/services.dart';
-import 'package:wingman/shared/server_helper.dart';
+import 'package:wingman/helpers/server_helper.dart';
 
 class ResponseScreen extends StatelessWidget {
   const ResponseScreen(this.futureResponse, {super.key});

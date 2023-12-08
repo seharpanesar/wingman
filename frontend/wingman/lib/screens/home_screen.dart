@@ -4,11 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_mobile_ads/google_mobile_ads.dart';
 import 'package:wingman/screens/response_screen.dart';
-import 'package:wingman/shared/constants.dart';
-import 'package:wingman/shared/image_helper.dart';
-import 'package:wingman/shared/server_helper.dart';
+import 'package:wingman/helpers/constants.dart';
+import 'package:wingman/helpers/image_helper.dart';
+import 'package:wingman/helpers/server_helper.dart';
 
-import '../shared/ad_helper.dart';
+import '../helpers/ad_helper.dart';
 
 RewardedAd? _rewardedAd;
 

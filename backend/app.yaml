@@ -1,0 +1,5 @@
+runtime: python39  # Use the Python 3.9 runtime (change this to your desired version)
+
+handlers:
+- url: /.*
+  script: auto  # Let App Engine handle the routing based on the WSGI script
